@@ -136,15 +136,26 @@ public CorsConfigurationSource corsConfigurationSource() {
 ## CSRF Protection
 
 **Configuration:**
-- CSRF protection is enabled by default for state-changing operations
-- JWT authentication works with CSRF disabled for stateless APIs
-- Enable CSRF for session-based authentication
+- CSRF protection is disabled for stateless JWT APIs (this is a common and acceptable practice)
+- JWT tokens in Authorization headers are not vulnerable to CSRF attacks
+- Browsers don't automatically attach Authorization headers like they do with cookies
+- Enable CSRF for session-based authentication if using cookies
+
+**Why CSRF is disabled for JWT:**
+1. JWT tokens are stored in sessionStorage/localStorage (not cookies)
+2. Tokens are manually added to Authorization header
+3. Browsers don't automatically send Authorization headers
+4. CSRF attacks rely on automatic cookie transmission
 
 ```java
-http.csrf(csrf -> csrf.disable()) // For stateless JWT APIs
-// OR
+// For stateless JWT APIs (current implementation)
+http.csrf(csrf -> csrf.disable())
+
+// For session-based authentication with cookies
 http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 ```
+
+**Note:** If you decide to use cookies for token storage instead of sessionStorage, you MUST enable CSRF protection.
 
 ## Session Management
 
