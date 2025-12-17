@@ -44,7 +44,7 @@ A comprehensive enterprise-grade authentication application built with Spring Bo
 
 ### Frontend
 - Node.js 18+ and npm 9+
-- Angular CLI 17
+- Angular CLI 19
 
 ## 🛠️ Installation & Setup
 
@@ -359,7 +359,7 @@ For issues and questions:
 - Maven
 
 ### Frontend
-- Angular 17
+- Angular 19
 - TypeScript
 - Bootstrap 5
 - Tabler UI

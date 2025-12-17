@@ -53,11 +53,11 @@ AuthApp is a comprehensive enterprise-grade authentication application that prov
 - CORS configuration
 - Data initialization with default users
 
-### 2. Frontend (Angular 17)
+### 2. Frontend (Angular 19)
 
 #### Core Features
 - **Modern UI Framework**
-  - Angular 17 (latest stable version)
+  - Angular 19 (latest stable version)
   - TypeScript
   - Standalone components architecture
   - Reactive programming with RxJS
@@ -302,7 +302,7 @@ keycloak.enabled=false
 - Lombok
 
 ### Frontend
-- Angular 17.3.12
+- Angular 19.3.12
 - TypeScript 5.2+
 - RxJS 7.8
 - Bootstrap 5.3.2
