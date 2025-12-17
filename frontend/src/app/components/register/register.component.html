@@ -1,0 +1,106 @@
+<div class="page page-center">
+  <div class="container container-tight py-4">
+    <div class="text-center mb-4">
+      <a href="." class="navbar-brand navbar-brand-autodark">
+        <h1 class="text-primary">AuthApp</h1>
+      </a>
+    </div>
+    <div class="card card-md">
+      <div class="card-body">
+        <h2 class="h2 text-center mb-4">Create new account</h2>
+        
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible" role="alert">
+          <div class="d-flex">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                <path d="M12 8v4"></path>
+                <path d="M12 16h.01"></path>
+              </svg>
+            </div>
+            <div>{{ errorMessage }}</div>
+          </div>
+          <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+        </div>
+
+        <div *ngIf="successMessage" class="alert alert-success alert-dismissible" role="alert">
+          <div class="d-flex">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 12l5 5l10 -10"></path>
+              </svg>
+            </div>
+            <div>{{ successMessage }}</div>
+          </div>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              name="fullName"
+              [(ngModel)]="registerRequest.fullName"
+              placeholder="Enter your full name"
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              name="email"
+              [(ngModel)]="registerRequest.email"
+              placeholder="your-email@example.com"
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              name="username"
+              [(ngModel)]="registerRequest.username"
+              placeholder="Enter username"
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input 
+              type="password" 
+              class="form-control"
+              name="password"
+              [(ngModel)]="registerRequest.password"
+              placeholder="Enter password"
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input 
+              type="password" 
+              class="form-control"
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword"
+              placeholder="Re-enter password"
+              required>
+          </div>
+          <div class="form-footer">
+            <button 
+              type="submit" 
+              class="btn btn-primary w-100"
+              [disabled]="isLoading || !registerForm.valid">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              Create new account
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="text-center text-muted mt-3">
+      Already have account? <a href="/login" tabindex="-1">Sign in</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,160 @@
+<app-navbar></app-navbar>
+
+<div class="page-wrapper">
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Dashboard
+          </h2>
+          <div class="text-muted mt-1">Welcome back, {{ currentUser?.fullName || currentUser?.username }}!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row row-deck row-cards">
+        <!-- User Info Card -->
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Your Profile</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Username</label>
+                    <div>{{ currentUser?.username }}</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <div>{{ currentUser?.email }}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Roles</label>
+                    <div>
+                      <span *ngFor="let role of currentUser?.roles" class="badge bg-primary me-1">{{ role }}</span>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Privileges</label>
+                    <div>
+                      <span *ngFor="let privilege of currentUser?.privileges" class="badge bg-success me-1">{{ privilege }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Info Card -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="subheader">Authentication Method</div>
+              </div>
+              <div class="h1 mb-3">JWT</div>
+              <div class="text-muted">Secure JSON Web Token authentication</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="subheader">Session Status</div>
+              </div>
+              <div class="h1 mb-3">Active</div>
+              <div class="text-muted">Your session is secure and active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Features Card -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="subheader">Security Features</div>
+              </div>
+              <div class="h1 mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shield-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M9 12l2 2l4 -4"></path>
+                  <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"></path>
+                </svg>
+                Protected
+              </div>
+              <div class="text-muted">Fraud detection enabled</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Authentication Methods Card -->
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Available Authentication Methods</h3>
+            </div>
+            <div class="list-group list-group-flush">
+              <div class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="badge bg-success"></span>
+                  </div>
+                  <div class="col text-truncate">
+                    <strong>JWT (JSON Web Token)</strong>
+                    <div class="text-muted">Stateless token-based authentication</div>
+                  </div>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="badge bg-success"></span>
+                  </div>
+                  <div class="col text-truncate">
+                    <strong>Basic Authentication</strong>
+                    <div class="text-muted">Simple username/password authentication</div>
+                  </div>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="badge bg-warning"></span>
+                  </div>
+                  <div class="col text-truncate">
+                    <strong>LDAP Authentication</strong>
+                    <div class="text-muted">Enterprise directory integration (requires configuration)</div>
+                  </div>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="badge bg-warning"></span>
+                  </div>
+                  <div class="col text-truncate">
+                    <strong>Keycloak SSO</strong>
+                    <div class="text-muted">Single Sign-On with Keycloak (requires configuration)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
