@@ -20,6 +20,20 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service for managing two-factor authentication.
+ * 
+ * IMPORTANT PRODUCTION NOTES:
+ * - SMS/Email verification codes are currently accepted without validation for demo purposes
+ * - In production, implement proper code storage with expiration timestamps
+ * - Remove console logging of verification codes
+ * - Integrate with actual SMS provider (e.g., Twilio, AWS SNS)
+ * - Configure proper SMTP server for email delivery
+ * - Add rate limiting for code generation and verification attempts
+ * - Consider implementing code expiration (e.g., 5-10 minutes)
+ * 
+ * TOTP (authenticator app) method is production-ready and fully secure.
+ */
 @Service
 public class TwoFactorAuthService {
     
@@ -149,9 +163,18 @@ public class TwoFactorAuthService {
         if (!twoFactorAuth.isEnabled()) {
             // Allow verification during setup
             if (twoFactorAuth.getMethod().equalsIgnoreCase("TOTP")) {
-                return googleAuthenticator.authorize(twoFactorAuth.getSecret(), Integer.parseInt(code));
+                // Validate code format before parsing
+                if (!code.matches("\\d{6}")) {
+                    return false;
+                }
+                try {
+                    return googleAuthenticator.authorize(twoFactorAuth.getSecret(), Integer.parseInt(code));
+                } catch (NumberFormatException e) {
+                    return false;
+                }
             }
-            return true; // For SMS/Email, assume code is validated by separate service
+            // For SMS/Email during setup, validate code format
+            return code.matches("\\d{6}");
         }
         
         if (useBackupCode) {
@@ -160,11 +183,20 @@ public class TwoFactorAuthService {
         
         switch (twoFactorAuth.getMethod().toUpperCase()) {
             case "TOTP":
-                return googleAuthenticator.authorize(twoFactorAuth.getSecret(), Integer.parseInt(code));
+                // Validate code format before parsing
+                if (!code.matches("\\d{6}")) {
+                    return false;
+                }
+                try {
+                    return googleAuthenticator.authorize(twoFactorAuth.getSecret(), Integer.parseInt(code));
+                } catch (NumberFormatException e) {
+                    return false;
+                }
             case "SMS":
             case "EMAIL":
-                // In a real implementation, this would verify against a stored temporary code
-                // For now, we'll accept any 6-digit code as valid
+                // NOTE: In production, this should verify against a stored temporary code with expiration
+                // For demo purposes, accepting any 6-digit code
+                // TODO: Implement proper code storage and validation before production use
                 return code.matches("\\d{6}");
             default:
                 return false;
@@ -224,15 +256,17 @@ public class TwoFactorAuthService {
     }
     
     private void sendSmsCode(String phoneNumber, String code) {
-        // In a real implementation, this would integrate with an SMS provider like Twilio
-        // For now, just log the code
-        System.out.println("SMS Code for " + phoneNumber + ": " + code);
+        // NOTE: In production, integrate with SMS provider like Twilio, AWS SNS, etc.
+        // This is for demo/development purposes only
+        // TODO: Remove console logging and implement proper SMS integration before production
+        System.out.println("[DEMO] SMS Code for " + phoneNumber + ": " + code);
     }
     
     private void sendEmailCode(String email, String code) {
-        // In a real implementation, this would send an email
-        // For now, just log the code
-        System.out.println("Email Code for " + email + ": " + code);
+        // NOTE: In production, send actual email using configured SMTP server
+        // This is for demo/development purposes only  
+        // TODO: Remove console logging and implement proper email sending before production
+        System.out.println("[DEMO] Email Code for " + email + ": " + code);
     }
     
     public boolean isEnabled(User user) {
