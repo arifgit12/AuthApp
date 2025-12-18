@@ -43,10 +43,21 @@ public class AuthenticationService {
     @Autowired
     private List<AuthenticationStrategy> authenticationStrategies;
     
+    @Autowired
+    private TwoFactorAuthService twoFactorAuthService;
+    
+    @Autowired
+    private RecaptchaService recaptchaService;
+    
     @Transactional
     public LoginResponse authenticate(LoginRequest loginRequest, String ipAddress, String userAgent) {
         String authMethod = loginRequest.getAuthMethod() != null ? 
             loginRequest.getAuthMethod().toUpperCase() : "JWT";
+        
+        // Verify reCAPTCHA
+        if (!recaptchaService.verify(loginRequest.getRecaptchaToken())) {
+            throw new RuntimeException("reCAPTCHA verification failed");
+        }
         
         // Check for suspicious activity
         if (fraudDetectionService.isSuspiciousActivity(loginRequest.getUsername(), ipAddress)) {
@@ -75,12 +86,39 @@ public class AuthenticationService {
                 loginRequest.getPassword()
             );
             
-            // Generate JWT token
-            String jwt = jwtUtils.generateJwtToken(authentication);
-            
             // Get user details
             User user = userRepository.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            // Check if 2FA is enabled
+            if (user.isTwoFactorEnabled()) {
+                // If 2FA code is not provided, require 2FA
+                if (loginRequest.getTwoFactorCode() == null || loginRequest.getTwoFactorCode().isEmpty()) {
+                    // Send code if method is SMS or EMAIL
+                    if ("SMS".equalsIgnoreCase(user.getTwoFactorMethod()) || 
+                        "EMAIL".equalsIgnoreCase(user.getTwoFactorMethod())) {
+                        twoFactorAuthService.sendCode(user);
+                    }
+                    
+                    // Return response indicating 2FA is required
+                    LoginResponse response = new LoginResponse();
+                    response.setTwoFactorRequired(true);
+                    response.setTwoFactorMethod(user.getTwoFactorMethod());
+                    response.setUsername(user.getUsername());
+                    return response;
+                }
+                
+                // Verify 2FA code
+                boolean useBackupCode = loginRequest.getTwoFactorCode().length() == 8;
+                if (!twoFactorAuthService.verify(user, loginRequest.getTwoFactorCode(), useBackupCode)) {
+                    fraudDetectionService.recordLoginAttempt(loginRequest.getUsername(), ipAddress, 
+                        userAgent, false, "Invalid 2FA code");
+                    throw new RuntimeException("Invalid 2FA code");
+                }
+            }
+            
+            // Generate JWT token
+            String jwt = jwtUtils.generateJwtToken(authentication);
             
             // Record successful login
             fraudDetectionService.recordLoginAttempt(loginRequest.getUsername(), ipAddress, 

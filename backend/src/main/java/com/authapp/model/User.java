@@ -58,6 +58,28 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
     
+    @Column(name = "two_factor_enabled")
+    private boolean twoFactorEnabled = false;
+    
+    @Column(name = "two_factor_method")
+    private String twoFactorMethod; // TOTP, SMS, EMAIL
+    
+    public boolean isTwoFactorEnabled() {
+        return twoFactorEnabled;
+    }
+    
+    public void setTwoFactorEnabled(boolean twoFactorEnabled) {
+        this.twoFactorEnabled = twoFactorEnabled;
+    }
+    
+    public String getTwoFactorMethod() {
+        return twoFactorMethod;
+    }
+    
+    public void setTwoFactorMethod(String twoFactorMethod) {
+        this.twoFactorMethod = twoFactorMethod;
+    }
+    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
