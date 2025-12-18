@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoginRequest, LoginResponse, RegisterRequest, User } from '../models/auth.model';
+import { LoginRequest, LoginResponse, RegisterRequest, User, TwoFactorSetupRequest, TwoFactorSetupResponse, TwoFactorEnableRequest } from '../models/auth.model';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -24,7 +24,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, loginRequest)
       .pipe(
         tap(response => {
-          if (response.token) {
+          // Only save token if 2FA is not required
+          if (response.token && !response.twoFactorRequired) {
             this.saveToken(response.token);
             const user: User = {
               id: 0,
@@ -50,6 +51,23 @@ export class AuthService {
     this.removeUser();
     this.currentUserSubject.next(null);
     return this.http.post(`${this.apiUrl}/logout`, {});
+  }
+
+  // 2FA methods
+  setup2FA(request: TwoFactorSetupRequest): Observable<TwoFactorSetupResponse> {
+    return this.http.post<TwoFactorSetupResponse>(`${this.apiUrl}/2fa/setup`, request);
+  }
+
+  enable2FA(request: TwoFactorEnableRequest): Observable<any> {
+    return this.http.post(`${this.apiUrl}/2fa/enable`, request);
+  }
+
+  disable2FA(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/2fa/disable`, {});
+  }
+
+  sendCode(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/2fa/send-code`, {});
   }
 
   public get currentUserValue(): User | null {
