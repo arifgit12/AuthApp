@@ -17,4 +17,6 @@ public class LoginResponse {
     private Set<String> roles;
     private Set<String> privileges;
     private String authMethod;
+    private boolean twoFactorRequired;
+    private String twoFactorMethod; // TOTP, SMS, EMAIL
 }

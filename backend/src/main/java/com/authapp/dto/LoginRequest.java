@@ -11,4 +11,6 @@ public class LoginRequest {
     private String username;
     private String password;
     private String authMethod; // BASIC, JWT, KEYCLOAK, LDAP
+    private String twoFactorCode; // For 2FA verification
+    private String recaptchaToken; // For reCAPTCHA verification
 }
